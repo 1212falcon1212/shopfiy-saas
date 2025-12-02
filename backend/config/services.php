@@ -28,6 +28,14 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'kolaysoft' => [
+        'base_url' => env('KOLAYSOFT_BASE_URL'),
+        'username' => env('KOLAYSOFT_USERNAME'),
+        'password' => env('KOLAYSOFT_PASSWORD'),
+        'supplier_vkn_tckn' => env('KOLAYSOFT_SUPPLIER_VKN_TCKN'), // Gönderici VKN/TCKN (XML'deki supplier ile eşleşmeli)
+        'supplier_name' => env('KOLAYSOFT_SUPPLIER_NAME', 'SaaS Magaza A.S.'), // Gönderici Firma Adı
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

@@ -4,109 +4,86 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User;
 use App\Models\Plan;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
+use App\Models\User; // User modelini ekledik
+use Illuminate\Support\Facades\Auth;
 
 class BillingController extends Controller
 {
-    /**
-     * Fatura Oluşturma ve Yönlendirme (Plan Seçimi)
-     */
-    public function index(Request $request)
+    public function index()
     {
-        $user = auth()->user(); // Middleware'den geçerse user gelir
-        
-        // Eğer user yoksa (Middleware redirect edince session bazen kaybolabilir API'de)
-        // Token ile gelmesi lazım.
+        // GÜNCELLEME: Auth::user() yerine User::first() kullanıyoruz (Dashboard gibi)
+        // Bu sayede token sorunu yaşamadan test edebiliriz.
+        $user = User::first();
+
         if (!$user) {
-            // Fallback: İlk user (Test için)
-            $user = User::first();
+            return response()->json(['error' => 'Kullanıcı bulunamadı'], 404);
         }
 
-        // Planı Bul (Tek planımız var: Pro Plan)
-        $plan = Plan::where('name', 'Pro Plan')->first();
+        // 1. Kullanıcının zaten bir planı var mı kontrol et
+        if ($user->plan_id) {
+            // Test ederken sürekli "Zaten planınız var" demesin diye burayı geçici olarak pasif yapabilirsin
+            // return response()->json(['message' => 'Zaten bir planınız var.', 'active' => true]);
+        }
+
+        // 2. Pro Planı Bul (RECURRING tipindeki ilk plan)
+        $plan = Plan::where('type', 'RECURRING')->first();
 
         if (!$plan) {
-            return response()->json(['error' => 'Plan bulunamadı.'], 500);
+            return response()->json(['error' => 'Plan bulunamadı. db:seed çalıştırdınız mı?'], 500);
         }
 
-        // Shopify API ile Charge Oluştur
+        // 3. Shopify API ile Ödeme Linki Oluştur
         try {
-            $payload = [
+            $response = $user->api()->rest('POST', '/admin/api/2024-01/recurring_application_charges.json', [
                 'recurring_application_charge' => [
                     'name' => $plan->name,
                     'price' => $plan->price,
-                    'return_url' => route('billing.process'), // Callback
-                    'test' => $plan->test,
-                    'trial_days' => $plan->trial_days,
+                    // test: true olduğu için gerçek kartınızdan para çekmez
+                    'return_url' => env('APP_URL') . '/api/billing/process',
+                    'test' => true,
+                    'trial_days' => $plan->trial_days ?? 3,
                 ]
-            ];
-
-            $response = $user->api()->rest('POST', '/admin/api/2024-04/recurring_application_charges.json', $payload);
-
-            if ($response['errors']) {
-                Log::error('Billing Charge Error:', $response['body']->container);
-                return response()->json(['error' => 'Fatura oluşturulamadı.'], 500);
-            }
-
-            $charge = $response['body']->container['recurring_application_charge'];
-            
-            // Confirmation URL'i frontend'e dön
-            // Frontend bu URL'e window.location.href ile gidecek
-            return response()->json([
-                'confirmation_url' => $charge['confirmation_url']
             ]);
-
         } catch (\Exception $e) {
-            Log::error('Billing Exception: ' . $e->getMessage());
-            return response()->json(['error' => 'Bir hata oluştu.'], 500);
+            \Illuminate\Support\Facades\Log::error('Shopify Billing Exception: ' . $e->getMessage());
+            return response()->json(['error' => 'Shopify API Hatası: ' . $e->getMessage()], 500);
         }
+
+        if ($response['errors']) {
+             \Illuminate\Support\Facades\Log::error('Shopify Billing API Error Status: ' . ($response['status'] ?? 'Unknown'));
+             // Body'yi string'e çevirip, çok uzunsa keselim
+             $bodyContent = is_string($response['body']) ? $response['body'] : json_encode($response['body']);
+             \Illuminate\Support\Facades\Log::error('Shopify Billing API Body Start: ' . substr($bodyContent, 0, 500));
+             
+            return response()->json(['error' => 'Shopify Billing Hatası', 'details' => $response['body'] ?? 'No body'], 500);
+        }
+
+        $confirmationUrl = $response['body']['recurring_application_charge']['confirmation_url'];
+
+        return response()->json(['confirmation_url' => $confirmationUrl]);
     }
 
-    /**
-     * Callback: Shopify'dan dönüş
-     */
     public function process(Request $request)
     {
         $chargeId = $request->query('charge_id');
-        $user = User::first(); // Callback'te auth olmayabilir, shop domain'den bulmak lazım ama şimdilik first()
+        $user = User::first(); // Burada da User::first() kullanıyoruz
 
         if (!$chargeId) {
-            return redirect('http://localhost:3000?error=charge_missing');
+            return redirect(env('FRONTEND_URL') . '/dashboard?billing=error');
         }
 
-        try {
-            // Charge'ı bul
-            $response = $user->api()->rest('GET', "/admin/api/2024-04/recurring_application_charges/{$chargeId}.json");
-            $charge = $response['body']->container['recurring_application_charge'];
+        // Charge'ı aktif et
+        $response = $user->api()->rest('POST', "/admin/api/2024-01/recurring_application_charges/{$chargeId}/activate.json");
 
-            if ($charge['status'] === 'accepted') {
-                // Aktive Et
-                $activateResponse = $user->api()->rest('POST', "/admin/api/2024-04/recurring_application_charges/{$chargeId}/activate.json", [
-                    'recurring_application_charge' => [
-                        'id' => $chargeId,
-                        'name' => $charge['name'],
-                        'price' => $charge['price'],
-                        'test' => $charge['test'],
-                    ]
-                ]);
-                
-                // DB'ye kaydet (Basitçe plan_id güncelle)
-                $plan = Plan::where('name', 'Pro Plan')->first();
-                $user->plan_id = $plan->id;
-                $user->save();
+        if (!$response['errors']) {
+            $plan = Plan::where('type', 'RECURRING')->first();
+            $user->plan_id = $plan->id;
+            $user->save();
 
-                // Frontend'e başarıyla dön
-                return redirect('http://localhost:3000?billing=success');
-            }
-
-            return redirect('http://localhost:3000?error=charge_declined');
-
-        } catch (\Exception $e) {
-            Log::error('Billing Process Exception: ' . $e->getMessage());
-            return redirect('http://localhost:3000?error=server_error');
+            return redirect(env('FRONTEND_URL') . '/dashboard?billing=success');
         }
+
+        return redirect(env('FRONTEND_URL') . '/dashboard?billing=failed');
     }
 }

@@ -31,6 +31,7 @@ Route::post('/xml/integrations/{id}/sync', [XmlController::class, 'sync']);
 Route::get('/orders', [OrderController::class, 'index']);
 Route::get('/orders/{id}', [OrderController::class, 'show']);
 Route::get('/orders/{id}/invoice', [OrderController::class, 'invoice']);
+Route::post('/orders/{id}/create-invoice', [OrderController::class, 'createInvoice']);
 
 // Ürünler
 Route::get('/products', [ProductController::class, 'index']);
@@ -44,14 +45,14 @@ Route::post('/products/sync', function (Request $request) {
 });
 
 // Billing (Para Kazanma)
+// ...
+Route::get('/dashboard', [DashboardController::class, 'index']);
+
 Route::get('/billing', [\App\Http\Controllers\Api\BillingController::class, 'index'])->name('billing');
 Route::get('/billing/process', [\App\Http\Controllers\Api\BillingController::class, 'process'])->name('billing.process');
 
-// Koleksiyonlar (Kategoriler) - YENİ
+// Koleksiyonlar (Kategoriler)
 Route::get('/collections', [CollectionController::class, 'index']);
 Route::get('/categories', [\App\Http\Controllers\Api\CategoryController::class, 'index']); // YENİ: Yerel Kategoriler
 
-// Dosya Yükleme - YENİ
 Route::post('/upload', [UploadController::class, 'store']);
-
-Route::get('/dashboard', [DashboardController::class, 'index']);

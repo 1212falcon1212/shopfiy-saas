@@ -3,14 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Osiset\ShopifyApp\Contracts\PlanModel as IPlanModel;
-use Osiset\ShopifyApp\Traits\PlanModel;
+use Osiset\ShopifyApp\Storage\Models\Plan as ShopifyPlan;
 
-class Plan extends Model implements IPlanModel
+class Plan extends ShopifyPlan
 {
     use HasFactory;
-    use PlanModel;
 
-    // Package'ın beklediği sütunlar zaten migration'da var.
+    // Paketin varsayılan tablosunu kullanmak için
+    protected $table = 'plans';
 }

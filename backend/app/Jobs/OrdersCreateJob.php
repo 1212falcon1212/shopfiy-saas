@@ -58,8 +58,12 @@ class OrdersCreateJob implements ShouldQueue
                 'currency' => $orderData->currency ?? 'TRY',
                 'financial_status' => $orderData->financial_status ?? 'pending',
                 'fulfillment_status' => $orderData->fulfillment_status ?? 'unfulfilled',
-                'line_items' => $orderData->line_items ?? []
+                'line_items' => $orderData->line_items ?? [],
+                'shipping_lines' => $orderData->shipping_lines ?? []
             ]
         );
+
+        // 4. Fatura Oluştur
+        CreateInvoiceJob::dispatch($order->fresh());
     }
 }

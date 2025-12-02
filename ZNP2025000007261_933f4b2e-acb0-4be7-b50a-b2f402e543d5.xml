@@ -1,0 +1,227 @@
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2">
+    <ext:UBLExtensions>
+        <ext:UBLExtension>
+            <ext:ExtensionContent><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature_933f4b2e-acb0-4be7-b50a-b2f402e543d5"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha384"/><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-Signature_933f4b2e-acb0-4be7-b50a-b2f402e543d5"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#sha384"/><ds:DigestValue>jTDNmWwOMQAzEByhP/TANciYjW4TjqmMrM3DS39fQ7OBRpz24Hd/ivMyadL5N181</ds:DigestValue></ds:Reference><ds:Reference Id="Reference-Id-e5dcf7f0-7ab9-46b0-b170-1e94f1222726" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#sha384"/><ds:DigestValue>qdadkkZm/d3iJ0ahan/uaJOYEwaqv88vd9qcTgQQycyfxX7OXU6QUkIKNMHdrx4G</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-Signature_933f4b2e-acb0-4be7-b50a-b2f402e543d5">yIK1aL+mZ3YTISFsZwSgwP1Q3N6aJemd97fC10M/d4odsl3zcPT07t4lTxVdU+0nA19EExfJ0fK1e83fs+rjcMx4lkDmRNhiZ81qW3qJv5ByULejz3WroAB6pQyvPnFhP9p05++gcDieJaVGfStUmeJokOavKCdXscgOxHwJzDTO6mPtes/RFtbshigvCVfD0uU/mR0zmnx9v8v0qE9ZCIifurtNOJvVCGS9GxQCXte2DxBc0A/0Ve41TST1AeBUikOVA9ODTcAgDUqTWXkX7gvmeh6+ixQ0H08vK6WZFA/evvdhMJp7OmGAlIVwWBG58wXym44In48q+RuBP4fCyA==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509SubjectName>CN=SMART DÖNÜŞÜM TEKNOLOJİ ANONİM ŞİRKETİ,2.5.4.5=#130a37373230373039363230</ds:X509SubjectName><ds:X509Certificate>MIIFDzCCBJWgAwIBAgIIAKEMmo4p3y4wCgYIKoZIzj0EAwMwgdExCzAJBgNVBAYTAlRSMRgwFgYD
+VQQHDA9HZWJ6ZSAtIEtvY2FlbGkxRzBFBgNVBAoMPlTDvHJraXllIEJpbGltc2VsIHZlIFRla25v
+bG9qaWsgQXJhxZ90xLFybWEgS3VydW11IC0gVMOcQsSwVEFLMRAwDgYDVQQLDAdCxLBMR0VNMU0w
+SwYDVQQDDERNYWxpIE3DvGjDvHIgRWxla3Ryb25payBTZXJ0aWZpa2EgSGl6bWV0IFNhxJ9sYXnE
+sWPEsXPEsSAtIFPDvHLDvG0gMzAeFw0yMzExMTcxMDE1MTdaFw0yNjExMTYxMDE1MTdaME8xEzAR
+BgNVBAUTCjc3MjA3MDk2MjAxODA2BgNVBAMML1NNQVJUIETDlk7DnMWew5xNIFRFS05PTE9KxLAg
+QU5PTsSwTSDFnsSwUktFVMSwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7Nel6k77
+I8IMiU2F3aZpdy8EFtVV9HxyZKGtk9owsUCjfU29Hp+5UcR/dGq47jqVL1eZsKUum5obEJ+IE6yM
+zGsKFXRYs9rl3fIsOJBofB6Lhu4Nw6BLLDj4KEDw7AmT7gCLTStahd3XUIzGkmXWkOUpLApD2rNm
+fL09HsrSWtSVN+2RmoSSpJpVs1F82nnpLx2k2xlHWCAOWRsR0E+E1f4psjy6W0V9cAMHDiFCE0j8
+hbprf/XnyrQ7aT1zUW0Rcl67rt0LNUFCdHOvCtJmC9ggcQHbpqAd3byK+o853KHTPkbJfZOk5nHM
+Yka7dFuBg0duw34kFoAz84yrFQ1VRwIDAQABo4ICCzCCAgcwHwYDVR0jBBgwFoAUBjloES0EC4AU
+vbc5gqsEyPbYqXwwHQYDVR0OBBYEFLWRFCxAsAqV2eWsQeJ6Dnly7BkdMA4GA1UdDwEB/wQEAwIH
+gDCBxgYDVR0gBIG+MIG7MIG4BgtghhgBAgEBBQcEATCBqDAqBggrBgEFBQcCARYeaHR0cDovL2Rl
+cG8ua2FtdXNtLmdvdi50ci9pbGtlMHoGCCsGAQUFBwICMG4MbEJ1IHNlcnRpZmlrYSBpbGUgaWxn
+aWxpIHNlcnRpZmlrYSB1eWd1bGFtYSBlc2FzbGFyxLFuxLEgb2t1bWFrIGnDp2luIGJlbGlydGls
+ZW4gd2ViIHNpdGVzaW5pIHppeWFyZXQgZWRpbml6LjAMBgNVHRMBAf8EAjAAMBYGA1UdJQQPMA0G
+C2CGGAECAQEFBzIBMEEGA1UdHwQ6MDgwNqA0oDKGMGh0dHA6Ly9kZXBvLmthbXVzbS5nb3YudHIv
+a3VydW1zYWwvbW1lc2hzLXMzLmNybDCBggYIKwYBBQUHAQEEdjB0MDwGCCsGAQUFBzAChjBodHRw
+Oi8vZGVwby5rYW11c20uZ292LnRyL2t1cnVtc2FsL21tZXNocy1zMy5jcnQwNAYIKwYBBQUHMAGG
+KGh0dHA6Ly9jaXNkdXBtbXMzLmt1cnVtc2FsLmthbXVzbS5nb3YudHIwCgYIKoZIzj0EAwMDaAAw
+ZQIxAJXnyDBu9Gavucg3s4+62NMNnJ5k2bx5Y/d6Lx128GZCUdQuWKQXMNh/7+It14YqnQIwN62M
+PnlGkhHtV6MyXEYmJuF6FhtWv/5LsD9rcIr9EXowZQJdjeoqJ9hPLdKwQwaP
+</ds:X509Certificate></ds:X509Data><ds:KeyValue><ds:RSAKeyValue><ds:Modulus>AOzXpepO+yPCDIlNhd2maXcvBBbVVfR8cmShrZPaMLFAo31NvR6fuVHEf3RquO46lS9XmbClLpua
+GxCfiBOsjMxrChV0WLPa5d3yLDiQaHwei4buDcOgSyw4+ChA8OwJk+4Ai00rWoXd11CMxpJl1pDl
+KSwKQ9qzZny9PR7K0lrUlTftkZqEkqSaVbNRfNp56S8dpNsZR1ggDlkbEdBPhNX+KbI8ultFfXAD
+Bw4hQhNI/IW6a3/158q0O2k9c1FtEXJeu67dCzVBQnRzrwrSZgvYIHEB26agHd28ivqPOdyh0z5G
+yX2TpOZxzGJGu3RbgYNHbsN+JBaAM/OMqxUNVUc=
+</ds:Modulus><ds:Exponent>AQAB</ds:Exponent></ds:RSAKeyValue></ds:KeyValue></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#Signature_933f4b2e-acb0-4be7-b50a-b2f402e543d5"><xades:SignedProperties Id="xades-Signature_933f4b2e-acb0-4be7-b50a-b2f402e543d5"><xades:SignedSignatureProperties><xades:SigningTime>2025-12-02T10:15:15Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#sha384"/><ds:DigestValue>Ww70d2pUjrn6CFta7PKCsfscEKD7t39ZlgxprX6gHkTFaCfY9YIAvFKNMZ2zpG8c</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Mali Mühür Elektronik Sertifika Hizmet Sağlayıcısı - Sürüm 3,OU=BİLGEM,O=Türkiye Bilimsel ve Teknolojik Araştırma Kurumu - TÜBİTAK,L=Gebze - Kocaeli,C=TR</ds:X509IssuerName><ds:X509SerialNumber>45331329200021294</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignerRole><xades:ClaimedRoles><xades:ClaimedRole>Supplier</xades:ClaimedRole></xades:ClaimedRoles></xades:SignerRole></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#Reference-Id-e5dcf7f0-7ab9-46b0-b170-1e94f1222726"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></ext:ExtensionContent>
+        </ext:UBLExtension>
+    </ext:UBLExtensions>
+    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+    <cbc:CustomizationID>TR1.2</cbc:CustomizationID>
+    <cbc:ProfileID>EARSIVFATURA</cbc:ProfileID>
+    <cbc:ID>ZNP2025000007261</cbc:ID>
+    <cbc:CopyIndicator>false</cbc:CopyIndicator>
+    <cbc:UUID>933f4b2e-acb0-4be7-b50a-b2f402e543d5</cbc:UUID>
+    <cbc:IssueDate>2025-12-02</cbc:IssueDate>
+    <cbc:IssueTime>13:15:10</cbc:IssueTime>
+    <cbc:InvoiceTypeCode>SATIS</cbc:InvoiceTypeCode>
+    <cbc:Note>İrsaliye yerine geçer.</cbc:Note>
+    <cbc:DocumentCurrencyCode>TRY</cbc:DocumentCurrencyCode>
+    <cbc:LineCountNumeric>1</cbc:LineCountNumeric>
+    <cac:OrderReference>
+        <cbc:ID>10750823984</cbc:ID>
+        <cbc:IssueDate>2025-12-02</cbc:IssueDate>
+    </cac:OrderReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>692ebc2ebfbb7</cbc:ID>
+        <cbc:IssueDate>2025-12-02</cbc:IssueDate>
+        <cbc:DocumentTypeCode>GONDERIM_SEKLI</cbc:DocumentTypeCode>
+        <cbc:DocumentType>ELEKTRONIK</cbc:DocumentType>
+    </cac:AdditionalDocumentReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>INTERNET_SATIS</cbc:ID>
+        <cbc:IssueDate>2025-12-02</cbc:IssueDate>
+        <cbc:DocumentTypeCode>ODEME_SEKLI</cbc:DocumentTypeCode>
+        <cbc:DocumentType>ODEMEARACISI</cbc:DocumentType>
+        <cac:IssuerParty>
+            <cbc:WebsiteURI>https://www.trendyol.com</cbc:WebsiteURI>
+            <cac:PartyIdentification>
+                <cbc:ID/>
+            </cac:PartyIdentification>
+            <cac:PartyName>
+                <cbc:Name/>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:CitySubdivisionName/>
+                <cbc:CityName/>
+                <cac:Country>
+                    <cbc:Name/>
+                </cac:Country>
+            </cac:PostalAddress>
+        </cac:IssuerParty>
+    </cac:AdditionalDocumentReference>
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>80763849-8f4b-437d-a047-801a4d33b034</cbc:ID>
+        <cbc:IssueDate>2025-12-02</cbc:IssueDate>
+        <cbc:DocumentType>XSLT</cbc:DocumentType>
+        <cac:Attachment>
+            <cbc:EmbeddedDocumentBinaryObject characterSetCode="UTF-8" encodingCode="Base64" filename="general.xslt" mimeCode="application/xml">
+        </cac:Attachment>
+    </cac:AdditionalDocumentReference>
+    <cac:Signature>
+        <cbc:ID schemeID="VKN_TCKN">2451007100</cbc:ID>
+        <cac:SignatoryParty>
+            <cac:PartyIdentification>
+                <cbc:ID schemeID="VKN">2451007100</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PostalAddress>
+                <cbc:CitySubdivisionName/>
+                <cbc:CityName/>
+                <cac:Country>
+                    <cbc:Name>Türkiye</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+        </cac:SignatoryParty>
+        <cac:DigitalSignatureAttachment>
+            <cac:ExternalReference>
+                <cbc:URI>#Signature_933f4b2e-acb0-4be7-b50a-b2f402e543d5</cbc:URI>
+            </cac:ExternalReference>
+        </cac:DigitalSignatureAttachment>
+    </cac:Signature>
+    <cac:AccountingSupplierParty>
+        <cac:Party>
+            <cac:PartyIdentification>
+                <cbc:ID schemeID="VKN">2451007100</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyName>
+                <cbc:Name>ÇETİN TEKNOLOJİ LİMİTED ŞİRKETİ</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:StreetName/>
+                <cbc:CitySubdivisionName/>
+                <cbc:CityName/>
+                <cbc:PostalZone>34000</cbc:PostalZone>
+                <cac:Country>
+                    <cbc:Name>Türkiye</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+            <cac:PartyTaxScheme>
+                <cac:TaxScheme>
+                    <cbc:Name>KOZYATAĞI VERGİ DAİRESİ MÜDÜRLÜĞÜ</cbc:Name>
+                </cac:TaxScheme>
+            </cac:PartyTaxScheme>
+        </cac:Party>
+    </cac:AccountingSupplierParty>
+    <cac:AccountingCustomerParty>
+        <cac:Party>
+            <cac:PartyIdentification>
+                <cbc:ID schemeID="TCKN">11111111111</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyName>
+                <cbc:Name>Saliha Kılıç</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:StreetName>Yıldıztepe mahallesi vefa sokak 1/18 erollar apartmanı</cbc:StreetName>
+                <cbc:CitySubdivisionName>Altındağ</cbc:CitySubdivisionName>
+                <cbc:CityName>Ankara</cbc:CityName>
+                <cac:Country>
+                    <cbc:Name>Türkiye</cbc:Name>
+                </cac:Country>
+            </cac:PostalAddress>
+            <cac:Contact>
+                <cbc:ElectronicMail>pf+oao29m9b@trendyolmail.com</cbc:ElectronicMail>
+            </cac:Contact>
+            <cac:Person>
+                <cbc:FirstName>Saliha</cbc:FirstName>
+                <cbc:FamilyName>Kılıç</cbc:FamilyName>
+            </cac:Person>
+        </cac:Party>
+    </cac:AccountingCustomerParty>
+    <cac:Delivery>
+        <cbc:ActualDeliveryDate>2025-12-02</cbc:ActualDeliveryDate>
+        <cac:CarrierParty>
+            <cac:PartyIdentification>
+                <cbc:ID schemeID="VKN">6080712084</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyName>
+                <cbc:Name>DHL eCommerce Marketplace</cbc:Name>
+            </cac:PartyName>
+            <cac:PostalAddress>
+                <cbc:CitySubdivisionName/>
+                <cbc:CityName/>
+                <cac:Country>
+                    <cbc:Name/>
+                </cac:Country>
+            </cac:PostalAddress>
+        </cac:CarrierParty>
+    </cac:Delivery>
+    <cac:AllowanceCharge>
+        <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+        <cbc:Amount currencyID="TRY">0</cbc:Amount>
+    </cac:AllowanceCharge>
+    <cac:TaxTotal>
+        <cbc:TaxAmount currencyID="TRY">46.50</cbc:TaxAmount>
+        <cac:TaxSubtotal>
+            <cbc:TaxableAmount currencyID="TRY">232.50</cbc:TaxableAmount>
+            <cbc:TaxAmount currencyID="TRY">46.50</cbc:TaxAmount>
+            <cbc:Percent>20</cbc:Percent>
+            <cac:TaxCategory>
+                <cac:TaxScheme>
+                    <cbc:Name>GERÇEK USULDE KATMA DEĞER VERGİSİ</cbc:Name>
+                    <cbc:TaxTypeCode>0015</cbc:TaxTypeCode>
+                </cac:TaxScheme>
+            </cac:TaxCategory>
+        </cac:TaxSubtotal>
+    </cac:TaxTotal>
+    <cac:LegalMonetaryTotal>
+        <cbc:LineExtensionAmount currencyID="TRY">232.50</cbc:LineExtensionAmount>
+        <cbc:TaxExclusiveAmount currencyID="TRY">232.50</cbc:TaxExclusiveAmount>
+        <cbc:TaxInclusiveAmount currencyID="TRY">279.00</cbc:TaxInclusiveAmount>
+        <cbc:AllowanceTotalAmount currencyID="TRY">0.00</cbc:AllowanceTotalAmount>
+        <cbc:PayableAmount currencyID="TRY">279.00</cbc:PayableAmount>
+    </cac:LegalMonetaryTotal>
+    <cac:InvoiceLine>
+        <cbc:ID>1</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="C62">1.00</cbc:InvoicedQuantity>
+        <cbc:LineExtensionAmount currencyID="TRY">232.50</cbc:LineExtensionAmount>
+        <cac:TaxTotal>
+            <cbc:TaxAmount currencyID="TRY">46.50</cbc:TaxAmount>
+            <cac:TaxSubtotal>
+                <cbc:TaxableAmount currencyID="TRY">232.50</cbc:TaxableAmount>
+                <cbc:TaxAmount currencyID="TRY">46.50</cbc:TaxAmount>
+                <cbc:Percent>20</cbc:Percent>
+                <cac:TaxCategory>
+                    <cac:TaxScheme>
+                        <cbc:Name>GERÇEK USULDE KATMA DEĞER VERGİSİ</cbc:Name>
+                        <cbc:TaxTypeCode>0015</cbc:TaxTypeCode>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>
+        </cac:TaxTotal>
+        <cac:Item>
+            <cbc:Name>MUHTELİF SIVI AROMA VE ESANS GRUBU</cbc:Name>
+            <cac:SellersItemIdentification>
+                <cbc:ID>ZVCL</cbc:ID>
+            </cac:SellersItemIdentification>
+        </cac:Item>
+        <cac:Price>
+            <cbc:PriceAmount currencyID="TRY">232.50</cbc:PriceAmount>
+        </cac:Price>
+    </cac:InvoiceLine>
+</Invoice>

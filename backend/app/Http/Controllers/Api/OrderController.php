@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Jobs\CreateInvoiceJob;
 
 class OrderController extends Controller
 {
@@ -45,4 +46,22 @@ class OrderController extends Controller
 
         return $pdf->download('fatura-'.$order->order_number.'.pdf');
     }
+
+    public function createInvoice($id)
+{
+    $order = \App\Models\Order::find($id);
+
+    if (!$order) {
+        return response()->json(['error' => 'Sipariş bulunamadı'], 404);
+    }
+
+    // Faturayı kuyruğa at
+    CreateInvoiceJob::dispatch($order);
+
+    return response()->json([
+        'message' => 'Fatura oluşturma işlemi başlatıldı.',
+        'order_number' => $order->order_number,
+        'status' => 'processing'
+    ]);
+}
 }

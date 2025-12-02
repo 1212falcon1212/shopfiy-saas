@@ -20,13 +20,15 @@ class Order extends Model
         'currency',
         'financial_status',
         'fulfillment_status',
-        'line_items'
+        'line_items',
+        'shipping_lines'
     ];
 
     protected $casts = [
         'shipping_address' => 'array',
         'line_items' => 'array',
-        'total_price' => 'decimal:2'
+        'total_price' => 'decimal:2',
+        'shipping_lines' => 'array'
     ];
 
     public function user()
