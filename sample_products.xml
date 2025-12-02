@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<products>
+  <product>
+    <title>Örnek T-Shirt</title>
+    <description>Kaliteli pamuklu t-shirt.</description>
+    <price>199.90</price>
+    <stock>50</stock>
+    <sku>TSHIRT-001</sku>
+    <image>https://via.placeholder.com/600x400.png?text=T-Shirt</image>
+  </product>
+  <product>
+    <title>Spor Ayakkabı</title>
+    <description>Rahat koşu ayakkabısı.</description>
+    <price>1250.00</price>
+    <stock>20</stock>
+    <sku>SHOE-RUN-01</sku>
+    <image>https://via.placeholder.com/600x400.png?text=Ayakkabi</image>
+  </product>
+  <product>
+    <title>Deri Cüzdan</title>
+    <description>Gerçek deri cüzdan.</description>
+    <price>450.50</price>
+    <stock>15</stock>
+    <sku>WALLET-L-01</sku>
+    <image>https://via.placeholder.com/600x400.png?text=Cuzdan</image>
+  </product>
+</products>
