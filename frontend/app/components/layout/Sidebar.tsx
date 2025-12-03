@@ -12,7 +12,10 @@ import {
   Truck, 
   CreditCard,
   LogOut, 
-  Store
+  Store,
+  Wand2,
+  Layout, // Yeni ikon
+  Settings // Yeni ikon
 } from "lucide-react";
 import { cn } from "../ui/Card"; // Eğer cn fonksiyonu burada değilse utils dosyasından çekin
 
@@ -21,8 +24,10 @@ const navigation = [
   { name: "Siparişler", href: "/orders", icon: ShoppingCart },
   { name: "Ürünler", href: "/products", icon: Package },
   { name: "XML Entegrasyon", href: "/xml-integration", icon: UploadCloud },
-  { name: "Tema Yönetimi", href: "/themes", icon: Palette },
-  { name: "Faturalar", href: "/invoices", icon: FileText }, // <-- Yeni Eklenen
+  { name: "AI Tema Tasarımı", href: "/theme-wizard", icon: Wand2 },
+  { name: "Tema Mağazası", href: "/themes", icon: Layout },
+  { name: "Faturalar", href: "/invoices", icon: FileText },
+  { name: "Ayarlar", href: "/settings/integrations", icon: Settings }, // Yeni Link
   { name: "Kargo", href: "/shipping", icon: Truck },
 ];
 

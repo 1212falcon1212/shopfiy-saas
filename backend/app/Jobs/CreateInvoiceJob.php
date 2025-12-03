@@ -39,9 +39,14 @@ class CreateInvoiceJob implements ShouldQueue
             // Durumu güncelle: İşleniyor
             $this->order->update(['invoice_status' => 'processing']);
 
-            // Servise sipariş verilerini gönder (Mapping işlemi burada veya serviste yapılabilir)
-            // Endpointleri verdiğinde $result yapısını netleştireceğiz.
-            $result = $kolaySoftService->createInvoice($this->order);
+            // Order'dan User üzerinden Store'u bul
+            $store = null;
+            if ($this->order->user) {
+                $store = $this->order->user->stores()->first();
+            }
+
+            // Servise sipariş verilerini gönder (Store ayarları ile birlikte)
+            $result = $kolaySoftService->createInvoice($this->order, $store);
 
             // Başarılı olursa veritabanını güncelle
             if ($result['success']) {

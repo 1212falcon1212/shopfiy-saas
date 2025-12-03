@@ -1,6 +1,59 @@
-/node_modules
-/frontend/node_modules
-/backend/vendor
-/.env
+# Dependencies
+node_modules/
+frontend/node_modules/
+backend/vendor/
+
+# Environment files
 .env
+.env.local
+.env.production
+.env.*.local
+backend/.env
+backend/.env.backup
+
+# Logs
+*.log
+backend/storage/logs/*
+!backend/storage/logs/.gitkeep
+
+# Laravel
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+!backend/storage/framework/**/.gitkeep
+backend/bootstrap/cache/*
+!backend/bootstrap/cache/.gitkeep
+
+# Next.js
+frontend/.next/
+frontend/out/
+frontend/.vercel
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.temp
+frontend.zip
+
+# Sensitive data (keep structure but not content)
+backend/storage/app/private/*
+!backend/storage/app/private/.gitkeep
+backend/storage/app/public/*
+!backend/storage/app/public/.gitkeep
+
+# But keep themes folder structure (themes are part of the app)
+!backend/storage/app/themes/.gitkeep

@@ -13,7 +13,7 @@ class UblGenerator
         return number_format((float)$number, 2, '.', '');
     }
 
-    public function generate(Order $order, $uuid, $documentId = null)
+    public function generate(Order $order, $uuid, $documentId = null, $supplierVknTckn = null, $supplierName = null)
     {
         $dom = new DOMDocument('1.0', 'UTF-8');
         $dom->preserveWhiteSpace = false;
@@ -198,7 +198,10 @@ class UblGenerator
         $this->addCbc($dom, $addDocRef2, 'DocumentType', 'ODEMEARACISI');
 
         // --- SIGNATURE (Şema gereksinimi - AccountingSupplierParty'den önce olmalı) ---
-        $supplierVknTckn = config('services.kolaysoft.supplier_vkn_tckn', '11111111111');
+        // Parametre verilmişse kullan, yoksa config'den al (fallback)
+        if ($supplierVknTckn === null) {
+            $supplierVknTckn = config('services.kolaysoft.supplier_vkn_tckn', '11111111111');
+        }
         $signature = $dom->createElement('cac:Signature');
         $invoice->appendChild($signature);
         
@@ -237,8 +240,10 @@ class UblGenerator
         $this->addCbc($dom, $extRef, 'URI', '#Signature_' . $uuid);
 
         // --- GÖNDERİCİ (SİZ) ---
-        // Supplier VKN/TCKN config'den alınmalı (KolaySoft kullanıcı bilgileriyle eşleşmeli)
-        $supplierName = config('services.kolaysoft.supplier_name', 'SaaS Magaza A.S.');
+        // Parametre verilmişse kullan, yoksa config'den al (fallback)
+        if ($supplierName === null) {
+            $supplierName = config('services.kolaysoft.supplier_name', 'SaaS Magaza A.S.');
+        }
         
         $supplier = $dom->createElement('cac:AccountingSupplierParty');
         $invoice->appendChild($supplier);

@@ -9,6 +9,9 @@ use App\Http\Controllers\Api\CollectionController; // YENİ
 use App\Http\Controllers\Api\UploadController; // YENİ
 use App\Jobs\ProductsSyncJob;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\FigmaController; // YENİ
+use App\Http\Controllers\Api\ThemeController; // YENİ - UNUTULAN SATIR
+use App\Http\Controllers\Api\StoreController; // YENİ
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -56,3 +59,19 @@ Route::get('/collections', [CollectionController::class, 'index']);
 Route::get('/categories', [\App\Http\Controllers\Api\CategoryController::class, 'index']); // YENİ: Yerel Kategoriler
 
 Route::post('/upload', [UploadController::class, 'store']);
+
+// Figma Entegrasyonu
+Route::post('/figma/analyze', [FigmaController::class, 'analyze']);
+
+// Tema Yönetimi
+Route::get('/themes', [ThemeController::class, 'index']);
+Route::post('/themes/{id}/install', [ThemeController::class, 'install']);
+Route::post('/themes/upload', [ThemeController::class, 'upload']); // Admin Only
+
+// Mağaza ve Entegrasyon Ayarları
+Route::get('/stores', [StoreController::class, 'index']);
+Route::get('/stores/default', [StoreController::class, 'getDefaultSettings']);
+Route::post('/stores/default', [StoreController::class, 'updateDefaultSettings']);
+Route::post('/stores', [StoreController::class, 'store']);
+Route::get('/stores/{id}', [StoreController::class, 'show']);
+Route::put('/stores/{id}', [StoreController::class, 'update']);

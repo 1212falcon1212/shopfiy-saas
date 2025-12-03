@@ -43,4 +43,9 @@ return [
         ],
     ],
 
+    'figma' => [
+        'access_token' => env('FIGMA_ACCESS_TOKEN'),
+        'base_url' => 'https://api.figma.com/v1',
+    ],
+
 ];

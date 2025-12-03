@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Order;
+use App\Models\Store;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 
@@ -12,24 +13,22 @@ class KolaySoftService
     protected $username;
     protected $password;
     protected $sourceUrn;
+    protected $supplierVknTckn;
+    protected $supplierName;
     protected $ublGenerator;
 
     public function __construct(UblGenerator $ublGenerator)
     {
-        // base_url should be just the domain (e.g., https://servis.kolayentegrasyon.net)
-        // Parse URL to extract only scheme + host (remove path and query)
+        // Default değerler (Fallback - .env'den veya config'den)
         $baseUrl = config('services.kolaysoft.base_url');
         if ($baseUrl) {
             $parsed = parse_url($baseUrl);
             if ($parsed && isset($parsed['scheme']) && isset($parsed['host'])) {
-                // Rebuild URL with only scheme + host
                 $this->baseUrl = $parsed['scheme'] . '://' . $parsed['host'];
-                // Add port if exists
                 if (isset($parsed['port'])) {
                     $this->baseUrl .= ':' . $parsed['port'];
                 }
             } else {
-                // Fallback: simple string replacement
                 $baseUrl = preg_replace('/\?.*$/', '', $baseUrl);
                 $baseUrl = preg_replace('#(/EArchiveInvoiceService.*|/InvoiceService.*)$#', '', $baseUrl);
                 $this->baseUrl = rtrim($baseUrl, '/');
@@ -38,14 +37,50 @@ class KolaySoftService
             $this->baseUrl = 'https://servis.kolayentegrasyon.net'; // Default
         }
         
+        // Default değerler (Fallback)
         $this->username = config('services.kolaysoft.username');
         $this->password = config('services.kolaysoft.password');
+        $this->supplierVknTckn = config('services.kolaysoft.supplier_vkn_tckn');
+        $this->supplierName = config('services.kolaysoft.supplier_name', 'SaaS Magaza A.S.');
         $this->sourceUrn = config('services.kolaysoft.source_urn', 'urn:mail:defaultpk');
         $this->ublGenerator = $ublGenerator;
     }
 
-    public function createInvoice(Order $order)
+    /**
+     * Mağaza ayarlarını yükler (Store modelinden).
+     */
+    protected function loadStoreSettings(?Store $store = null)
     {
+        if ($store) {
+            // Store'dan ayarları al
+            if ($store->kolaysoft_username) {
+                $this->username = $store->kolaysoft_username;
+            }
+            if ($store->kolaysoft_password) {
+                $this->password = $store->kolaysoft_password;
+            }
+            if ($store->kolaysoft_vkn_tckn) {
+                $this->supplierVknTckn = $store->kolaysoft_vkn_tckn;
+            }
+            if ($store->kolaysoft_supplier_name) {
+                $this->supplierName = $store->kolaysoft_supplier_name;
+            }
+        }
+    }
+
+    public function createInvoice(Order $order, ?Store $store = null)
+    {
+        // Store ayarlarını yükle (eğer verilmişse)
+        $this->loadStoreSettings($store);
+        
+        // Eğer Store yoksa, Order'dan User üzerinden Store bulmayı dene
+        if (!$store && $order->user) {
+            $store = $order->user->stores()->first();
+            if ($store) {
+                $this->loadStoreSettings($store);
+            }
+        }
+        
         // 1. Basic Definitions
         $action = 'sendInvoice';
         // Namespace for E-Archive (küçük harf - örnek kodda böyle)
@@ -73,7 +108,14 @@ class KolaySoftService
             }
             
             // 2. Generate and Clean UBL XML (documentId'yi geçir - cbc:ID ile eşleşmesi için)
-            $xmlContent = $this->ublGenerator->generate($order, $uuid, $documentId);
+            // Store ayarlarından supplier bilgilerini geçir
+            $xmlContent = $this->ublGenerator->generate(
+                $order, 
+                $uuid, 
+                $documentId,
+                $this->supplierVknTckn,
+                $this->supplierName
+            );
             
             if ($xmlContent !== '') {
                 $xmlContent = preg_replace('/^\xEF\xBB\xBF/', '', $xmlContent); // Remove BOM

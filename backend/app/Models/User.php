@@ -21,6 +21,7 @@ class User extends Authenticatable implements IShopModel
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +45,21 @@ class User extends Authenticatable implements IShopModel
             'email_verified_at' => 'datetime',
             //'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Kullanıcının yönettiği mağazalar.
+     */
+    public function stores()
+    {
+        return $this->hasMany(Store::class);
+    }
+
+    /**
+     * Kullanıcı admin mi kontrol eder.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
     }
 }
