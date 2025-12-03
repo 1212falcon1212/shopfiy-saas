@@ -14,10 +14,15 @@ class ProductController extends Controller
     // ... (Diğer metodlar aynı kalıyor)
     public function index(Request $request)
     {
-        $user = User::first(); 
-        if (!$user) return response()->json(['error' => 'Mağaza bulunamadı'], 404);
+        $user = $request->user();
+        if (!$user) return response()->json(['error' => 'Kullanıcı bulunamadı'], 401);
 
         $query = Product::where('user_id', $user->id);
+
+        // Store ID filtresi varsa uygula
+        if ($request->has('store_id')) {
+            $query->where('store_id', $request->store_id);
+        }
 
         if ($request->has('search')) {
             $search = $request->query('search');

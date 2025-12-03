@@ -15,11 +15,7 @@ class StoreController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
-        // Eğer hiç mağaza yoksa, ana hesabı bir "Store" gibi dönüştürüp listeye ekleyebiliriz
-        // veya otomatik oluşturabiliriz. Şimdilik boş dönelim.
-        $stores = $user->stores;
-
+        $stores = $user->stores()->orderBy('created_at', 'desc')->get();
         return response()->json($stores);
     }
 
@@ -31,11 +27,22 @@ class StoreController extends Controller
         $request->validate([
             'domain' => 'required|string|unique:stores,domain',
             'access_token' => 'nullable|string',
+            'shopify_client_id' => 'nullable|string',
+            'shopify_client_secret' => 'nullable|string',
+            'shop_owner' => 'nullable|string',
+            'email' => 'nullable|email',
         ]);
 
         $user = Auth::user();
 
-        $store = $user->stores()->create($request->all());
+        // Domain formatını temizle (https:// kaldır, sonundaki / kaldır)
+        $domain = preg_replace('#^https?://#', '', $request->domain);
+        $domain = rtrim($domain, '/');
+
+        $store = $user->stores()->create(array_merge(
+            $request->all(),
+            ['domain' => $domain]
+        ));
 
         return response()->json($store, 201);
     }
@@ -50,40 +57,50 @@ class StoreController extends Controller
     }
 
     /**
-     * Mağaza ayarlarını günceller (KolaySoft dahil).
+     * Mağaza bilgilerini günceller.
      */
     public function update(Request $request, $id)
     {
         $store = Auth::user()->stores()->findOrFail($id);
 
-        // Hassas verileri şifrelemek gerekebilir ama şimdilik düz tutuyoruz
-        $store->update($request->all());
+        $request->validate([
+            'domain' => 'sometimes|required|string|unique:stores,domain,' . $id,
+            'email' => 'nullable|email',
+        ]);
+
+        $store->update($request->only([
+            'domain',
+            'access_token',
+            'shopify_client_id',
+            'shopify_client_secret',
+            'shop_owner',
+            'email',
+            'webhook_base_url',
+            'currency',
+            'locale',
+            'is_active'
+        ]));
 
         return response()->json([
             'success' => true,
-            'message' => 'Ayarlar güncellendi.',
+            'message' => 'Mağaza güncellendi.',
             'store' => $store
         ]);
     }
 
     /**
-     * Ana hesabın KolaySoft ayarlarını kaydetmek için (Geçici Çözüm)
-     * SaaS dönüşümünde User -> Store geçişi tamamlanana kadar, User tablosunda veya
-     * User'a bağlı "Default Store"da bu ayarları tutmak gerekir.
+     * KolaySoft ayarlarını günceller.
      */
-    public function updateDefaultSettings(Request $request)
+    public function updateKolaysoftSettings(Request $request, $id)
     {
-        $user = Auth::user();
-        
-        // Kullanıcının varsayılan bir mağazası var mı? Yoksa oluşturalım.
-        $store = $user->stores()->first();
-        
-        if (!$store) {
-            $store = $user->stores()->create([
-                'domain' => $user->name, // User name usually holds the domain in laravel-shopify
-                'is_active' => true
-            ]);
-        }
+        $store = Auth::user()->stores()->findOrFail($id);
+
+        $request->validate([
+            'kolaysoft_username' => 'nullable|string',
+            'kolaysoft_password' => 'nullable|string',
+            'kolaysoft_vkn_tckn' => 'nullable|string',
+            'kolaysoft_supplier_name' => 'nullable|string',
+        ]);
 
         $store->update($request->only([
             'kolaysoft_username',
@@ -94,13 +111,46 @@ class StoreController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Entegrasyon ayarları kaydedildi.',
+            'message' => 'Entegrasyon ayarları güncellendi.',
             'store' => $store
         ]);
     }
+
+    /**
+     * Mağazayı siler.
+     */
+    public function destroy($id)
+    {
+        $store = Auth::user()->stores()->findOrFail($id);
+        $store->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Mağaza silindi.'
+        ]);
+    }
+
+    /**
+     * Varsayılan (ilk) mağazanın ayarlarını günceller (Eski metod uyumluluğu için)
+     */
+    public function updateDefaultSettings(Request $request)
+    {
+        $user = Auth::user();
+        $store = $user->stores()->first();
+        
+        if (!$store) {
+            // Mağaza yoksa oluştur (Eski kullanıcılar için migration)
+            $store = $user->stores()->create([
+                'domain' => $user->name ?? 'default-store', 
+                'is_active' => true
+            ]);
+        }
+
+        return $this->updateKolaysoftSettings($request, $store->id);
+    }
     
     /**
-     * Varsayılan ayarları getirir.
+     * Varsayılan (ilk) mağazanın ayarlarını getirir (Eski metod uyumluluğu için)
      */
     public function getDefaultSettings()
     {
@@ -119,4 +169,3 @@ class StoreController extends Controller
         return response()->json($store);
     }
 }
-

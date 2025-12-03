@@ -23,11 +23,11 @@ class XmlController extends Controller
         // Şimdilik test kullanıcısı (user_id = 1)
         // Auth eklendiğinde: auth()->user()->xmlIntegrations
         $userId = 1;
-        
+
         $integrations = XmlIntegration::where('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->get();
-            
+
         return response()->json($integrations);
     }
 
@@ -60,7 +60,7 @@ class XmlController extends Controller
         $validated = $request->validate([
             'xml_url' => 'required|url',
             'field_mapping' => 'required|array',
-            'user_id' => 'required|integer|exists:users,id' 
+            'user_id' => 'required|integer|exists:users,id'
         ]);
 
         $integration = XmlIntegration::updateOrCreate(
@@ -105,12 +105,12 @@ class XmlController extends Controller
     public function destroy($id)
     {
         $integration = XmlIntegration::findOrFail($id);
-        
+
         // Güvenlik: Kullanıcı kendi entegrasyonunu mu siliyor?
         // if ($integration->user_id !== auth()->id()) abort(403);
-        
+
         $integration->delete();
-        
+
         return response()->json(['message' => 'Entegrasyon silindi.']);
     }
 
@@ -118,9 +118,9 @@ class XmlController extends Controller
     public function sync($id)
     {
         $integration = XmlIntegration::findOrFail($id);
-        
+
         XmlImportJob::dispatch($integration);
-        
+
         return response()->json(['message' => 'Senkronizasyon işlemi kuyruğa alındı.']);
     }
 }

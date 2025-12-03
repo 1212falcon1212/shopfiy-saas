@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import api from "../src/services/api";
 import { Card, CardHeader, CardContent } from "../components/ui/Card";
 import { Badge } from "../components/ui/Badge";
-import { Search, Plus, RefreshCw, Edit, Trash2, Package, UploadCloud, CheckSquare, Square } from "lucide-react";
+import { Search, Plus, RefreshCw, Edit, Trash2, Package, UploadCloud, CheckSquare, Square, Download } from "lucide-react";
 import Link from "next/link";
+import { useSettings } from "../context/SettingsContext"; // Settings context eklendi
 
 interface Product {
   id: number;
@@ -19,20 +20,29 @@ interface Product {
 }
 
 export default function ProductsPage() {
+  const { selectedStore } = useSettings(); // Seçili mağazayı al
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false); // Senkronizasyon durumu
   const [searchTerm, setSearchTerm] = useState("");
   
   // Çoklu seçim state'i
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    if (selectedStore) {
+        fetchProducts();
+    } else {
+        setLoading(false); // Mağaza seçili değilse yüklemeyi bitir
+    }
+  }, [selectedStore]); // Mağaza değişince ürünleri yeniden çek
 
   const fetchProducts = () => {
+    if (!selectedStore) return;
+    
     setLoading(true);
-    api.get("/products?limit=50")
+    // Store ID ile ürünleri çek
+    api.get(`/products?limit=50&store_id=${selectedStore.id}`)
       .then((res) => {
          setProducts(res.data.data || []);
          setLoading(false);
@@ -42,6 +52,30 @@ export default function ProductsPage() {
         setLoading(false);
       });
   };
+
+  const handleSyncProducts = async () => {
+    if (!selectedStore) {
+        alert("Lütfen önce bir mağaza seçin.");
+        return;
+    }
+
+    setSyncing(true);
+    try {
+        await api.post('/products/sync', { store_id: selectedStore.id });
+        alert("Ürün senkronizasyonu başlatıldı. İşlem tamamlandığında ürünler burada listelenecektir.");
+        // 3 saniye sonra listeyi yenile (ilk partiyi görmek için)
+        setTimeout(() => {
+            fetchProducts();
+        }, 3000);
+    } catch (error: any) {
+        console.error("Senkronizasyon hatası:", error);
+        alert("Senkronizasyon başlatılamadı: " + (error.response?.data?.message || error.message));
+    } finally {
+        setSyncing(false);
+    }
+  };
+
+  // ... (Geri kalan kod aynı)
 
   const filteredProducts = products.filter(product => 
     product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -97,6 +131,19 @@ export default function ProductsPage() {
              </button>
            )}
            
+           <button 
+             onClick={handleSyncProducts}
+             disabled={syncing}
+             className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-500 shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+           >
+             {syncing ? (
+                <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+             ) : (
+                <Download size={16} />
+             )}
+             Shopify'dan Getir
+           </button>
+
            <button 
              onClick={fetchProducts}
              className="px-4 py-2 bg-slate-800 text-slate-300 text-sm font-medium rounded-lg hover:bg-slate-700 transition-colors flex items-center gap-2"

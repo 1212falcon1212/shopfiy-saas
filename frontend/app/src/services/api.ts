@@ -8,6 +8,20 @@ const api = axios.create({
   },
 });
 
+// Request interceptor: Her istekte token ekle
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Axios Interceptor (Araya Girici)
 api.interceptors.response.use(
   (response) => {

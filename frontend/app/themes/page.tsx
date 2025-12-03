@@ -42,18 +42,15 @@ export default function ThemesPage() {
       
       if (!res.ok) {
         console.warn('User endpoint hatası:', res.status);
-        // Geçici çözüm: Test için admin olarak göster (Production'da kaldırılmalı)
-        setIsAdmin(true); // TEST: Şimdilik true yapıyoruz
+        setIsAdmin(false);
         return;
       }
       
       const user = await res.json();
-      console.log('User data:', user); // Debug
       setIsAdmin(user?.role === 'admin');
     } catch (error) {
       console.error('Admin kontrolü yapılamadı:', error);
-      // Geçici çözüm: Hata durumunda da admin olarak göster (TEST)
-      setIsAdmin(true); // TEST: Şimdilik true yapıyoruz
+      setIsAdmin(false);
     }
   };
 

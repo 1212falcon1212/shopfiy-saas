@@ -38,7 +38,7 @@ class XmlImportJob implements ShouldQueue
         }
 
         $items = $parsedData['items'] ?? [];
-        $mapping = $this->integration->field_mapping; 
+        $mapping = $this->integration->field_mapping;
         $user = User::find($this->userId);
 
         Log::info("Toplam " . count($items) . " adet ürün bulundu. İşleniyor...");
@@ -46,7 +46,7 @@ class XmlImportJob implements ShouldQueue
         foreach ($items as $item) {
             $this->processItem($item, $mapping, $user);
         }
-        
+
         Log::info("XML Import Tamamlandı.");
     }
 
@@ -82,7 +82,7 @@ class XmlImportJob implements ShouldQueue
 
         // Eğer ürün güncelleniyorsa, resimleri tekrar yüklemeyelim (opsiyonel, trafik tasarrufu)
         if ($localProduct) {
-            unset($productData['images']); 
+            unset($productData['images']);
         }
 
         $shopifyPayload = ['product' => $productData];
@@ -104,7 +104,7 @@ class XmlImportJob implements ShouldQueue
             } else {
                 $shopifyProduct = $response['body']->container['product'];
                 $shopifyProductId = $shopifyProduct['id'];
-                
+
                 // 3. Panel Veritabanını Güncelle
                 Product::updateOrCreate(
                     ['id' => $localProduct ? $localProduct->id : null],
@@ -139,7 +139,7 @@ class XmlImportJob implements ShouldQueue
         $findCollection = $user->api()->rest('GET', '/admin/api/2024-04/custom_collections.json', [
             'title' => $categoryName
         ]);
-        
+
         $collectionId = null;
         $foundCollections = [];
 
@@ -177,7 +177,7 @@ class XmlImportJob implements ShouldQueue
     {
         if (isset($mapping[$shopifyField]) && !empty($mapping[$shopifyField])) {
             $xmlKey = $mapping[$shopifyField];
-            return $item[$xmlKey] ?? $default; 
+            return $item[$xmlKey] ?? $default;
         }
         return $default;
     }

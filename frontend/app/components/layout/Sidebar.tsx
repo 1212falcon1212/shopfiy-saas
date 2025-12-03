@@ -7,27 +7,29 @@ import {
   ShoppingCart, 
   Package, 
   UploadCloud, 
-  Palette, 
   FileText, 
   Truck, 
   CreditCard,
   LogOut, 
   Store,
   Wand2,
-  Layout, // Yeni ikon
-  Settings // Yeni ikon
+  Layout,
+  Settings,
+  ShoppingBag
 } from "lucide-react";
-import { cn } from "../ui/Card"; // Eğer cn fonksiyonu burada değilse utils dosyasından çekin
+import { cn } from "../ui/Card";
+import { useSettings } from "../../context/SettingsContext";
+import api from "../../src/services/api";
 
 const navigation = [
-  { name: "Genel Bakış", href: "/", icon: LayoutDashboard },
+  { name: "Genel Bakış", href: "/dashboard", icon: LayoutDashboard },
   { name: "Siparişler", href: "/orders", icon: ShoppingCart },
   { name: "Ürünler", href: "/products", icon: Package },
+  { name: "Mağazalarım", href: "/stores", icon: ShoppingBag }, // Yeni Link
   { name: "XML Entegrasyon", href: "/xml-integration", icon: UploadCloud },
   { name: "AI Tema Tasarımı", href: "/theme-wizard", icon: Wand2 },
   { name: "Tema Mağazası", href: "/themes", icon: Layout },
   { name: "Faturalar", href: "/invoices", icon: FileText },
-  { name: "Ayarlar", href: "/settings/integrations", icon: Settings }, // Yeni Link
   { name: "Kargo", href: "/shipping", icon: Truck },
 ];
 
@@ -37,6 +39,24 @@ const secondaryNavigation = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { selectedStore, t } = useSettings();
+  const useRouter = require("next/navigation").useRouter;
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await api.post('/logout');
+    } catch (error) {
+      console.error("Çıkış hatası:", error);
+    } finally {
+      // Tokenları temizle
+      localStorage.removeItem("auth_token");
+      sessionStorage.removeItem("auth_token");
+      
+      // Login sayfasına yönlendir
+      router.push("/login");
+    }
+  };
 
   return (
     <div className="flex h-screen w-72 flex-col bg-[#0B1120] border-r border-slate-800/60 relative z-20 transition-all duration-300">
@@ -85,7 +105,7 @@ export function Sidebar() {
                         isActive ? "text-indigo-400" : "text-slate-500 group-hover:text-slate-300"
                       )}
                     />
-                    {item.name}
+                    {t(item.name) !== item.name ? t(item.name) : item.name}
                   </div>
                   {isActive && (
                     <div className="h-1.5 w-1.5 rounded-full bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.8)]" />
@@ -120,7 +140,7 @@ export function Sidebar() {
                       isActive ? "text-indigo-400" : "text-slate-500 group-hover:text-slate-300"
                     )}
                   />
-                  {item.name}
+                  {t(item.name) !== item.name ? t(item.name) : item.name}
                 </Link>
               );
             })}
@@ -133,19 +153,26 @@ export function Sidebar() {
       <div className="p-4 border-t border-slate-800/60 bg-[#0F1623]">
         <div className="bg-slate-900/50 rounded-xl p-3 border border-slate-800/50 mb-3">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
-              S
+            <div className="h-8 w-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 border border-emerald-500/20 flex-shrink-0">
+              {selectedStore ? selectedStore.domain.charAt(0).toUpperCase() : 'S'}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-slate-200 truncate">Shopify Store</p>
-              <p className="text-xs text-slate-500 truncate">store.myshopify.com</p>
+              <p className="text-sm font-medium text-slate-200 truncate">
+                {selectedStore ? selectedStore.domain : t('no_store')}
+              </p>
+              <p className="text-xs text-slate-500 truncate">
+                {selectedStore ? 'Shopify Store' : 'Select a store'}
+              </p>
             </div>
           </div>
         </div>
         
-        <button className="flex w-full items-center justify-center px-4 py-2 text-sm font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all duration-300">
+        <button 
+          onClick={handleLogout}
+          className="flex w-full items-center justify-center px-4 py-2 text-sm font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all duration-300"
+        >
           <LogOut className="mr-2 h-4 w-4" />
-          Oturumu Kapat
+          {t('logout')}
         </button>
       </div>
     </div>

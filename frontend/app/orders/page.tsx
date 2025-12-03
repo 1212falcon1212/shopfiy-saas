@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import api from "../src/services/api";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/Card";
 import { Badge } from "../components/ui/Badge";
-import { Search, Download, Filter, Eye, MoreHorizontal, FileText, ShoppingCart } from "lucide-react";
+import { Search, Download, Filter, Eye, MoreHorizontal, FileText, ShoppingCart, RefreshCw } from "lucide-react";
 import Link from "next/link";
+import { useSettings } from "../context/SettingsContext"; // Settings context eklendi
 
 interface Order {
   id: number;
@@ -18,22 +19,58 @@ interface Order {
 }
 
 export default function OrdersPage() {
+  const { selectedStore } = useSettings(); // Seçili mağazayı al
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false); // Senkronizasyon durumu
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    // Siparişleri çek
-    api.get("/orders?user_id=1") // ID dinamik olacak
+    if (selectedStore) {
+        fetchOrders();
+    } else {
+        setLoading(false); // Mağaza seçili değilse yüklemeyi bitir
+    }
+  }, [selectedStore]);
+
+  const fetchOrders = () => {
+    if (!selectedStore) return;
+
+    setLoading(true);
+    api.get(`/orders?store_id=${selectedStore.id}`) // Store ID ile filtrele
       .then((res) => {
-        setOrders(res.data.data); // Pagination yapısında veri 'data' içindedir
+        setOrders(res.data.data || []); // Pagination yapısında veri 'data' içindedir
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
+        console.error("Siparişler yüklenirken hata:", err);
         setLoading(false);
       });
-  }, []);
+  };
+
+  const handleSyncOrders = async () => {
+    if (!selectedStore) {
+        alert("Lütfen önce bir mağaza seçin.");
+        return;
+    }
+
+    setSyncing(true);
+    try {
+        await api.post('/orders/sync', { store_id: selectedStore.id });
+        alert("Sipariş senkronizasyonu başlatıldı. İşlem tamamlandığında siparişler burada listelenecektir.");
+        // 3 saniye sonra listeyi yenile
+        setTimeout(() => {
+            fetchOrders();
+        }, 3000);
+    } catch (error: any) {
+        console.error("Senkronizasyon hatası:", error);
+        alert("Senkronizasyon başlatılamadı: " + (error.response?.data?.message || error.message));
+    } finally {
+        setSyncing(false);
+    }
+  };
+
+  // ... (Fatura indirme ve diğer kısımlar aynı)
 
   const handleDownloadInvoice = (id: number, orderNumber: string) => {
     // PDF indirme işlemi (Blob olarak çekip indiriyoruz)
@@ -67,6 +104,26 @@ export default function OrdersPage() {
           <p className="text-slate-400 mt-1 text-sm">Tüm siparişlerinizi yönetin ve faturalandırın.</p>
         </div>
         <div className="flex gap-2">
+           <button 
+             onClick={handleSyncOrders}
+             disabled={syncing}
+             className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-500 shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+           >
+             {syncing ? (
+                <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+             ) : (
+                <Download size={16} />
+             )}
+             Shopify'dan Getir
+           </button>
+
+           <button 
+             onClick={fetchOrders}
+             className="px-4 py-2 bg-slate-800 text-slate-300 text-sm font-medium rounded-lg hover:bg-slate-700 transition-colors flex items-center gap-2"
+           >
+             <RefreshCw size={16} /> Yenile
+           </button>
+
            <button className="px-4 py-2 bg-slate-800 text-slate-300 text-sm font-medium rounded-lg hover:bg-slate-700 transition-colors flex items-center gap-2">
              <Filter size={16} /> Filtrele
            </button>

@@ -26,7 +26,7 @@
             var Redirect = AppBridge.actions.Redirect;
 
             const app = createApp({
-                apiKey: '{{ config('shopify-app.api_key') }}',
+                apiKey: '{{ config('shopify-app.api_key') ?? '' }}', // Custom App yaklaşımında opsiyonel
                 host: '{{ request('host') }}',
                 forceRedirect: true,
             });

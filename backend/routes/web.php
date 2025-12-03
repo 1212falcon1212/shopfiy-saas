@@ -12,6 +12,9 @@ use App\Jobs\OrdersSyncJob;
 use App\Jobs\ProductsSyncJob;
 
 
+// Shopify OAuth Callback (Public - redirect yapıyor)
+Route::get('/api/shopify/callback', [\App\Http\Controllers\Api\ShopifyOAuthController::class, 'callback']);
+
 // Shopify'dan giriş yapan kullanıcıları buraya yönlendirir
 Route::get('/billing', [\App\Http\Controllers\Api\BillingController::class, 'index'])->middleware('verify.shopify')->name('billing');
 Route::get('/billing/process', [\App\Http\Controllers\Api\BillingController::class, 'process'])->middleware('verify.shopify')->name('billing.process');

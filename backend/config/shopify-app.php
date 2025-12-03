@@ -14,6 +14,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Shop Model
+    |--------------------------------------------------------------------------
+    |
+    | The model to use for shops.
+    |
+    */
+    'shop_model' => App\Models\Store::class,
+
+    /*
+    |--------------------------------------------------------------------------
     | Shopify API Keys
     |--------------------------------------------------------------------------
     |
@@ -39,9 +49,14 @@ return [
     |--------------------------------------------------------------------------
     |
     | İzinler (.env dosyasından çeker).
+    | Custom App oluştururken kullanıcıların seçmesi gereken scope'lar:
+    | - read_products, write_products (Ürün yönetimi)
+    | - read_orders, write_orders (Sipariş yönetimi ve fatura)
+    | - read_custom_collections, write_custom_collections (Koleksiyon yönetimi)
+    | - write_themes (Tema yükleme)
     |
     */
-    'api_scopes' => env('SHOPIFY_APP_SCOPES', 'read_products,write_products'),
+    'api_scopes' => env('SHOPIFY_APP_SCOPES', 'read_products,write_products,read_orders,write_orders,read_custom_collections,write_custom_collections,write_themes'),
 
     /*
     |--------------------------------------------------------------------------

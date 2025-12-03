@@ -13,13 +13,17 @@ class OrderController extends Controller
     // Siparişleri Listele
     public function index(Request $request)
     {
-        // Gerçek senaryoda: auth()->id() kullanılır.
-        // Test için: user_id = 1 varsayıyoruz (Frontend'den gönderilecek veya Auth middleware eklenecek)
-        $userId = $request->query('user_id', 1);
+        $user = $request->user();
+        if (!$user) return response()->json(['error' => 'Kullanıcı bulunamadı'], 401);
 
-        $orders = Order::where('user_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10); // Sayfalama
+        $query = Order::where('user_id', $user->id);
+
+        // Store ID filtresi varsa uygula
+        if ($request->has('store_id')) {
+            $query->where('store_id', $request->store_id);
+        }
+
+        $orders = $query->orderBy('created_at', 'desc')->paginate(10); // Sayfalama
 
         return response()->json($orders);
     }
@@ -48,20 +52,29 @@ class OrderController extends Controller
     }
 
     public function createInvoice($id)
-{
-    $order = \App\Models\Order::find($id);
+    {
+        $order = \App\Models\Order::find($id);
 
-    if (!$order) {
-        return response()->json(['error' => 'Sipariş bulunamadı'], 404);
+        if (!$order) {
+            return response()->json(['error' => 'Sipariş bulunamadı'], 404);
+        }
+
+        // Siparişin kullanıcısının mağazasını bul (Fatura entegrasyonu için)
+        // Bu sipariş hangi mağazaya ait? (Şu an Order modelinde store_id yoksa user'dan buluyoruz)
+        // İdeal olan Order modelinde store_id olmasıdır. Şimdilik user'ın ilk mağazasını alıyoruz.
+        $store = $order->user ? $order->user->stores()->first() : null;
+
+        if (!$store) {
+             return response()->json(['error' => 'Bu sipariş için fatura oluşturulacak mağaza bulunamadı.'], 400);
+        }
+
+        // Faturayı kuyruğa at (Store bilgisini job'a geçirmemiz gerekebilir ama şu an user üzerinden buluyor)
+        CreateInvoiceJob::dispatch($order);
+
+        return response()->json([
+            'message' => 'Fatura oluşturma işlemi başlatıldı.',
+            'order_number' => $order->order_number,
+            'status' => 'processing'
+        ]);
     }
-
-    // Faturayı kuyruğa at
-    CreateInvoiceJob::dispatch($order);
-
-    return response()->json([
-        'message' => 'Fatura oluşturma işlemi başlatıldı.',
-        'order_number' => $order->order_number,
-        'status' => 'processing'
-    ]);
-}
 }
